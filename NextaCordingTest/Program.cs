@@ -12,48 +12,39 @@ namespace NextaCordingTest
     {
         static void Main(string[] args)
         {
-            try
+            //参加者のリストを標準入力で,区切りで取得
+            Console.WriteLine("参加者のリストを,区切りで入力してください");
+            //string playersString = Console.ReadLine();
+            var playersString = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16";
+            String[] players = playersString.Split(',');
+
+            //どの参加者が何点をいつ取得したかのリストを標準入力で１行ずつ取得
+            var pointList = new List<PointList>();
+            pointList = ReadingInput(players);
+
+            //ランキング集計のリストに、プレイヤーを格納
+            var RankingList = new List<PointList>();
+            RankingList = AddPlayers(RankingList, players);
+
+            //ランキング集計のリストに、ポイントを加算
+            RankingList = PointCalculation(RankingList, pointList);
+
+            int rankerCount = 10;
+
+            //順位確定処理
+            RankingList =determineRank(RankingList, rankerCount);
+
+
+            //画面出力
+            Console.WriteLine($"順位,プレイヤー名,点数,最終更新日");          
+            for (int i = 0; i < RankingList.Count; i++)
             {
-                //参加者のリストを標準入力で,区切りで取得
-                Console.WriteLine("参加者のリストを,区切りで入力してください");
-                //string playersString = Console.ReadLine();
-                var playersString = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16";
-                String[] players = playersString.Split(',');
-
-                //どの参加者が何点をいつ取得したかのリストを標準入力で１行ずつ取得
-                var pointList = new List<PointList>();
-                pointList = ReadingInput(players);
-
-                //ランキング集計のリストに、プレイヤーを格納
-                var RankingList = new List<PointList>();
-                RankingList = AddPlayers(RankingList, players);
-
-                //ランキング集計のリストに、ポイントを加算
-                RankingList = PointCalculation(RankingList, pointList);
-
-                //トップ何人を表示するか
-                int rankerCount = 10;
-
-                //順位確定処理
-                RankingList = determineRank(RankingList, rankerCount);
-
-                //画面出力
-                Console.WriteLine($"順位,プレイヤー名,点数,最終更新日");
-                for (int i = 0; i < RankingList.Count; i++)
-                {
-                    if (RankingList[i].Rank == rankerCount + 1) break;
-                    Console.WriteLine($"{RankingList[i].Rank}位：{RankingList[i].PlayerName,8},{RankingList[i].Point,8},{RankingList[i].YMD,8}");
-                }
-
-                Console.WriteLine($"何かキーを押すと終了します");
-                Console.ReadKey();
+                if (RankingList[i].Rank == rankerCount + 1) break;
+                Console.WriteLine($"{RankingList[i].Rank}位：{RankingList[i].PlayerName,8},{RankingList[i].Point,8},{RankingList[i].YMD,8}");
             }
-            catch (Exception e)
-            {
-                Console.WriteLine($"予期せぬエラーが発生しました。エラーメッセージ：{e.Message}");
-                Console.WriteLine($"何かキーを押すと終了します");
-                Console.ReadKey();
-            }
+
+            Console.WriteLine($"Enterキーを押すと終了します");
+            Console.ReadLine();
         }
 
         /// <summary>
@@ -66,7 +57,7 @@ namespace NextaCordingTest
             var pointList = new List<PointList>();
             for (int i = 0; ; i++)
             {
-                Console.WriteLine("どの参加者が何点をいつ取得したか、１行ずつ[参加者,何点,年月日８桁]の形で入力してください。　（例：tarou,100,20231122）");
+                Console.WriteLine("どの参加者が何点をいつ取得したか、１行ずつ[参加者,点数,年月日８桁]の形で入力してください。　（例：tarou,100,20231122）");
                 Console.WriteLine("１行ずつ入力してください。終了する場合はENDと入力してください");
                 string inputString = Console.ReadLine();
                 String[] points = inputString.Split(',');
@@ -87,6 +78,8 @@ namespace NextaCordingTest
                 var temp2 = new PointList() { PlayerName = points[0], Point = int.Parse(points[1]), YMD = points[2] };
                 pointList.Add(temp2);
             }
+            return pointList;
+        }
 
         /// <summary>
         /// ランキング集計のリストに、プレイヤーを格納
@@ -98,14 +91,23 @@ namespace NextaCordingTest
         {
             for (int i = 0; i < players.Length; i++)
             {
-                var playerItem = new PointList { PlayerName = players[i], Point = 0, YMD = "0000" };
+                var playerItem = new PointList { PlayerName = players[i], Point = 0, YMD = "00000000" };
                 if (!RankingList.Contains(playerItem))
                 {
                     RankingList.Add(playerItem);
                 }
             }
+            return RankingList;
+        }
 
-            //ランキング集計のリストに、ポイントを加算(計算量がえぐいのでアルゴリズムを考える)
+        /// <summary>
+        /// ランキング集計のリストに、ポイントを加算
+        /// </summary>
+        /// <param name="RankingList"></param>
+        /// <param name="pointList"></param>
+        /// <returns></returns>
+        public static List<PointList> PointCalculation(List<PointList> RankingList, List<PointList> pointList)
+        {
             for (int i = 0; i < pointList.Count; i++)
             {
                 foreach (PointList p in RankingList)
@@ -123,13 +125,12 @@ namespace NextaCordingTest
             }
             return RankingList;
         }
-
         /// <summary>
         /// 順位確定処理
         /// </summary>
         /// <param name="RankingList"></param>
         /// <returns></returns>
-        public static List<PointList> determineRank(List<PointList> RankingList, int rankerCount) 
+        public static List<PointList> determineRank(List<PointList> RankingList,int rankerCount) 
         {
             //年月をキーに昇順でソートした後、得点を降順でソート
             RankingList.Sort((a, b) => int.Parse(a.YMD) - int.Parse(b.YMD));
@@ -139,32 +140,51 @@ namespace NextaCordingTest
             var duplicateList = new List<PointList>();
             for (int i = 0; i < RankingList.Count - 1; i++)
             {
-                if (RankingList[i].YMD == "0000")
+                if (RankingList[i].YMD == "00000000")
                 {
-                    p.YMD = "未プレイ";
+                    RankingList[i].YMD = "未プレイ";
+                    continue;
                 }
-            }
-            Console.WriteLine($"順位,プレイヤー名,点数,更新日");
-            int Count = RankingList.Count;
-            if (RankingList.Count > 10)
-            {
-                Count = 10;
+                if (RankingList[i].Point == RankingList[i + 1].Point)
+                {
+                    RankingList[i].Rank = Rank;
+                    duplicateList.Add(RankingList[i]);
+                }
+                else
+                {
+                    RankingList[i].Rank = Rank;
+                    Rank++;
+                }
             }
             if (Rank <= rankerCount + 1)
             {
-                Console.WriteLine($"{i}位：{RankingList[i].PlayerName,8},{RankingList[i].Point,8},{RankingList[i].YMD,8}");
+                RankingList[RankingList.Count - 1].Rank = Rank;
             }
-
-           
-
-            Console.ReadLine();
+            return RankingList;
         }
     }
 }
 
+/// <summary>
+/// プレイヤー名がいつ何点を取得したか記録する。
+/// </summary>
 public class PointList
 {
+    /// <summary>
+    /// 順位
+    /// </summary>
+    public int Rank { get; set; }
+    /// <summary>
+    /// プレイヤー名
+    /// </summary>
     public string PlayerName { get; set; }
+    /// <summary>
+    /// 取得した点数
+    /// </summary>
     public int Point { get; set; }
+    /// <summary>
+    /// 最終更新日
+    /// </summary>
     public string YMD { get; set; }
 }
+
