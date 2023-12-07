@@ -29,15 +29,17 @@ namespace NextaCordingTest
             //ランキング集計のリストに、ポイントを加算
             RankingList = PointCalculation(RankingList, pointList);
 
+            int rankerCount = 10;
+
             //順位確定処理
-            RankingList =determineRank(RankingList);
+            RankingList =determineRank(RankingList, rankerCount);
 
 
             //画面出力
             Console.WriteLine($"順位,プレイヤー名,点数,最終更新日");          
             for (int i = 0; i < RankingList.Count; i++)
             {
-                if (RankingList[i].Rank == 11) break;
+                if (RankingList[i].Rank == rankerCount + 1) break;
                 Console.WriteLine($"{RankingList[i].Rank}位：{RankingList[i].PlayerName,8},{RankingList[i].Point,8},{RankingList[i].YMD,8}");
             }
 
@@ -128,7 +130,7 @@ namespace NextaCordingTest
         /// </summary>
         /// <param name="RankingList"></param>
         /// <returns></returns>
-        public static List<PointList> determineRank(List<PointList> RankingList) 
+        public static List<PointList> determineRank(List<PointList> RankingList,int rankerCount) 
         {
             //年月をキーに昇順でソートした後、得点を降順でソート
             RankingList.Sort((a, b) => int.Parse(a.YMD) - int.Parse(b.YMD));
@@ -154,7 +156,7 @@ namespace NextaCordingTest
                     Rank++;
                 }
             }
-            if (Rank <= 11)
+            if (Rank <= rankerCount + 1)
             {
                 RankingList[RankingList.Count - 1].Rank = Rank;
             }
