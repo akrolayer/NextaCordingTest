@@ -16,7 +16,6 @@ namespace NextaCordingTest
             Console.WriteLine("参加者のリストを,区切りで入力してください");
             string playersString = Console.ReadLine();
             String[] players = playersString.Split(',');
-            //String[] players = { "a", "b", "c" ,"d"};
 
             //どの参加者が何点をいつ取得したかのリストを標準入力で１行ずつ取得
             var pointList = new List<PointList>();
@@ -73,23 +72,34 @@ namespace NextaCordingTest
 
             //画面出力
             RankingList.Sort((a,b) => b.Point- a.Point);
-            foreach (PointList p in RankingList)
-            {
-                if (p.YMD == "00000000")
+
+            int Rank = 1;
+            for(int i= 0;i < RankingList.Count - 1; i++) { 
+                if (RankingList[1].YMD == "未プレイ")
                 {
-                    p.YMD = "未プレイ";
+                    continue;
+                }
+                if (RankingList[i].Point == RankingList[i+1].Point)
+                {
+                    RankingList[i].Rank = Rank;
+                }
+                else
+                {
+                    RankingList[i].Rank = Rank;
+                    Rank++;
                 }
             }
-            Console.WriteLine($"順位,プレイヤー名,点数,更新日");
-            int Count = RankingList.Count;
-            if (RankingList.Count > 10)
-            {
-                Count = 10;
-            }
+            if(Rank <= 11)
+                RankingList[RankingList.Count-1].Rank = Rank;
+
             
-            for (int i=0; i<Count;i++)
+            Console.WriteLine($"順位,プレイヤー名,点数,最終更新日");
+
+
+            for (int i = 0; i < RankingList.Count; i++)
             {
-                Console.WriteLine($"{i+1}位：{RankingList[i].PlayerName,8},{RankingList[i].Point,8},{RankingList[i].YMD,8}");
+                if (RankingList[i].Rank == 11) break;
+                Console.WriteLine($"{RankingList[i].Rank}位：{RankingList[i].PlayerName,8},{RankingList[i].Point,8},{RankingList[i].YMD,8}");
             }
 
 
@@ -99,9 +109,26 @@ namespace NextaCordingTest
     }
 }
 
+/// <summary>
+/// プレイヤー名がいつ何点を取得したか記録する。
+/// </summary>
 public class PointList
 {
+    /// <summary>
+    /// 順位
+    /// </summary>
+    public int Rank { get; set; }
+    /// <summary>
+    /// プレイヤー名
+    /// </summary>
     public string PlayerName { get; set; }
+    /// <summary>
+    /// 取得した点数
+    /// </summary>
     public int Point { get; set; }
+    /// <summary>
+    /// 最終更新日
+    /// </summary>
     public string YMD { get; set; }
 }
+
