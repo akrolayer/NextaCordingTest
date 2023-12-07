@@ -34,9 +34,8 @@ namespace NextaCordingTest
 
                 //画面出力
                 Console.WriteLine($"順位,プレイヤー名,点数,最終更新日");
-                //同率をすべて表示する場合
-                //for (int i = 0; i < RankingList.Count; i++)
-                //トップ１０人を表示する場合
+
+                //トップrankerCount人を表示する
                 for (int i = 0; i < rankerCount; i++)
                 {
                     if (RankingList[i].Rank == rankerCount + 1) break;
