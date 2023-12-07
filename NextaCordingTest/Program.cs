@@ -27,7 +27,7 @@ namespace NextaCordingTest
                 RankingList = PointCalculation(RankingList, pointList);
 
                 //トップ何人を表示するか
-                int rankerCount = 10;
+                int rankerCount = 8;
 
                 //順位確定処理
                 RankingList = determineRank(RankingList, rankerCount);
