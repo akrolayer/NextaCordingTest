@@ -14,15 +14,15 @@ namespace NextaCordingTest
         {
             //参加者のリストを標準入力で,区切りで取得
             Console.WriteLine("参加者のリストを,区切りで入力してください");
-            //string playersString = Console.ReadLine();
-            //String[] players = playersString.Split(',');
-            String[] players = { "a", "b", "c" ,"d"};
+            string playersString = Console.ReadLine();
+            String[] players = playersString.Split(',');
+            //String[] players = { "a", "b", "c" ,"d"};
 
             //どの参加者が何点をいつ取得したかのリストを標準入力で１行ずつ取得
             var pointList = new List<PointList>();
             for (int i = 0; ; i++)
             {
-                Console.WriteLine("どの参加者が何点をいつ取得したか、１行ずつ[参加者,何点,年月日８桁]の形で入力してください。　（例：tarou,100,20231122）");
+                Console.WriteLine("どの参加者が何点をいつ取得したか、１行ずつ[参加者,点数,年月日８桁]の形で入力してください。　（例：tarou,100,20231122）");
                 Console.WriteLine("１行ずつ入力してください。終了する場合はENDと入力してください");
                 string inputString = Console.ReadLine();
                 String[] points = inputString.Split(',');
@@ -89,11 +89,11 @@ namespace NextaCordingTest
             
             for (int i=0; i<Count;i++)
             {
-                Console.WriteLine($"{i}位：{RankingList[i].PlayerName,8},{RankingList[i].Point,8},{RankingList[i].YMD,8}");
+                Console.WriteLine($"{i+1}位：{RankingList[i].PlayerName,8},{RankingList[i].Point,8},{RankingList[i].YMD,8}");
             }
 
-           
 
+            Console.WriteLine($"Enterキーを押すと終了します");
             Console.ReadLine();
         }
     }
